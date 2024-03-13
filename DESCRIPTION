@@ -1,11 +1,15 @@
 Package: liklihoodmatrix
 Type: Package
 Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Version: 1.0.0
+Author: Otis Johnson
+Maintainer: The package maintainer <otis.johnson@upf.edu>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+Imports: 
+    readxl,
+    writexl
+RoxygenNote: 7.3.1
