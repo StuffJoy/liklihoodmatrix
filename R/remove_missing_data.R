@@ -1,3 +1,21 @@
+#' Remove Missing Data
+#'
+#' Remove columns or rows with missing data exceeding a specified threshold percentage.
+#'
+#' @param data The input dataset.
+#' @param type The type of missing data removal. Choose between "column" or "row".
+#' @param threshold_percentage The threshold percentage of missing data above which columns or rows will be removed.
+#'
+#' @return The modified dataset with missing data removed.
+#'
+#' @examples
+#' # Remove columns with missing data exceeding 20%
+#' new_data <- remove_missing_data(data, "column", 0.2)
+#'
+#' # Remove rows with missing data exceeding 30%
+#' new_data <- remove_missing_data(data, "row", 0.3)
+#'
+#' @export
 remove_missing_data <- function(data, type, threshold_percentage) {
   if (type == "column") {
     # Calculate the number of missing values in each column

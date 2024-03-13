@@ -1,3 +1,19 @@
+#' Sort Columns in Excel Sheets
+#'
+#' Sorts all columns (except the first) in each sheet of an Excel file in ascending order and writes the sorted data to a new Excel file.
+#'
+#' @param file_path Path to the input Excel file.
+#' @param output_file Path to the output Excel file where the sorted data will be saved.
+#'
+#' @return None. The sorted data is written to the output Excel file.
+#'
+#' @examples
+#' # Sort columns in input.xlsx and save the sorted data to output.xlsx
+#' sort_columns("input.xlsx", "output.xlsx")
+#'
+#' @import readxl
+#' @import writexl
+#' @export
 # function that will sort all columns (except the first) by ASC order
 sort_columns <- function(file_path, output_file) {
 

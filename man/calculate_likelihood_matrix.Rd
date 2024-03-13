@@ -4,10 +4,16 @@
 \alias{calculate_likelihood_matrix}
 \title{Calculate likelihood matrix based on genetic marker matching}
 \usage{
-calculate_likelihood_matrix(volunteer_samples, human_samples_in_mosquito)
+calculate_likelihood_matrix(
+  volunteer_samples,
+  human_samples_in_mosquito,
+  result_type
+)
 }
 \arguments{
 \item{volunteer_samples}{A data frame containing human genetic data}
+
+\item{result_type}{Denotes whether you want the results to be the genetic distance (1), or percentage match (2)}
 
 \item{human_profiles}{A data frame containing human blood extrated from mosquitoes}
 }
