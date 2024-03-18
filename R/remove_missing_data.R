@@ -22,7 +22,7 @@ remove_missing_data <- function(data, type, threshold_percentage) {
     missing_values <- colMeans(is.na(data))
 
     # Identify columns where the percentage of missing values exceeds the threshold
-    columns_to_remove <- names(missing_values[missing_values > threshold_percentage])
+    columns_to_remove <- names(missing_values[missing_values >= threshold_percentage])
 
     # Remove identified columns from the dataset
     data <- data[, !names(data) %in% columns_to_remove]
