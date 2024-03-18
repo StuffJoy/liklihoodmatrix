@@ -45,7 +45,7 @@ calculate_likelihood_matrix <- function(volunteer_samples, human_samples_in_mosq
         # (Need to ask Fede if this description is accurate) Calculates the genetic distance between the genetic markers of samples found in the current mosquito against the samples of the volunteer
         match_percentage <- 1 - sum(sapply(1:length(volunteer_samples_column_labels), function(k) identical(human_in_mosquito_selected_row[k], human_genetic_markers[k]))) / length(volunteer_samples_column_labels)
 
-        } else if ("2") {
+        } else if (result_type == "2") {
 
         # script below uses a more straight forward percentage match method. Higher the percentage, closer the match
         match_percentage <- sum(sapply(1:length(volunteer_samples_column_labels), function(k) identical(human_in_mosquito_selected_row[k], human_genetic_markers[k]))) / length(volunteer_samples_column_labels) * 100
