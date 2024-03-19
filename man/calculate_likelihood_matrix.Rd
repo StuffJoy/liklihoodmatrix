@@ -5,17 +5,20 @@
 \title{Calculate likelihood matrix based on genetic marker matching}
 \usage{
 calculate_likelihood_matrix(
-  volunteer_samples,
-  human_samples_in_mosquito,
-  result_type
+  buccal_swabs,
+  human_profiles,
+  result_type,
+  tolerance = 0
 )
 }
 \arguments{
-\item{volunteer_samples}{A data frame containing human genetic data}
+\item{buccal_swabs}{A data frame containing human genetic data}
+
+\item{human_profiles}{A data frame containing human blood extracted from mosquitoes}
 
 \item{result_type}{Denotes whether you want the results to be the genetic distance (1), or percentage match (2)}
 
-\item{human_profiles}{A data frame containing human blood extrated from mosquitoes}
+\item{tolerance}{Denotes an acceptable tolerance range for values}
 }
 \value{
 A matrix representing the likelihood of genetic marker matching between the samples in each mosquito and human.
@@ -28,5 +31,5 @@ between blood extracted from mosquitoes and human samples.
 # Example usage:
 data("buccal_swabs")
 data("human_profiles")
-calculate_new_likelihood_matrix(buccal_swabs, human_profiles)
+calculate_new_likelihood_matrix(buccal_swabs, human_profiles,1,0)
 }

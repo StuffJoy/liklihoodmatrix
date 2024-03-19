@@ -3,109 +3,71 @@
 #' This function calculates the likelihood matrix by comparing genetic markers
 #' between blood extracted from mosquitoes and human samples.
 #'
-#' @param volunteer_samples A data frame containing human genetic data
-#' @param human_profiles A data frame containing human blood extrated from mosquitoes
+#' @param buccal_swabs A data frame containing human genetic data
+#' @param human_profiles A data frame containing human blood extracted from mosquitoes
 #' @param result_type Denotes whether you want the results to be the genetic distance (1), or percentage match (2)
+#' @param tolerance Denotes an acceptable tolerance range for values
 #' @return A matrix representing the likelihood of genetic marker matching between the samples in each mosquito and human.
 #' @export
 #' @examples
 #' # Example usage:
 #' data("buccal_swabs")
 #' data("human_profiles")
-#' calculate_new_likelihood_matrix(buccal_swabs, human_profiles)
+#' calculate_new_likelihood_matrix(buccal_swabs, human_profiles,1,0)
 
 
-# Modified function that replaces %in% matching with cell by cell matching
-calculate_likelihood_matrix <- function(volunteer_samples, human_samples_in_mosquito, result_type) {
+calculate_likelihood_matrix <- function(buccal_swabs, human_profiles, result_type, tolerance = 0) {
+  # Convert tolerance percentage to a decimal for calculation
+  tolerance_decimal <- tolerance / 100
 
-  # Extracts the first column of the volunteer_samples data
-  volunteer_samples_row_labels <- volunteer_samples[[1]]
+  # Extract human IDs and genetic marker names
+  human_ids <- buccal_swabs[[1]]
+  genetic_markers <- colnames(buccal_swabs)[-1]  # Exclude the first column (human IDs)
 
-  # Extracts the column names of the volunteer_samples data (excluding the first column)
-  volunteer_samples_column_labels <- colnames(volunteer_samples)[-1]
-
-  # Extracts the first column of the human_samples_in_mosquito data
-  human_in_mosquito_row_labels <- human_samples_in_mosquito[[1]]
-
-  # Extracts the column names of the human_samples_in_mosquito data (excluding the first column)
-  human_in_mosquito_column_labels <- human_samples_in_mosquito[,-1]
-
+  # Extract mosquito IDs
+  mosquito_ids <- human_profiles[[1]]
 
   # Initialize an empty matrix for the likelihood
-  likelihood_matrix <- matrix(0, nrow = length(volunteer_samples_row_labels), ncol = length(human_in_mosquito_row_labels))
+  likelihood_matrix <- matrix(0, nrow = length(human_ids), ncol = length(mosquito_ids))
 
   # Iterate through each mosquito and calculate likelihood for each human
-  for (i in 1:length(human_in_mosquito_row_labels)) { # Loop that iterates over each mosquito in the human_samples_in_mosquito data frame
-    for (j in 1:length(volunteer_samples_row_labels)) { # Nested loop iterates over each person in the volunteer_samples data frame
-      human_genetic_markers <- volunteer_samples[j, -1]  # Extracts the genetic markers for each volunteer (excluding first column
-      human_in_mosquito_selected_row <- human_in_mosquito_column_labels[i, , drop = FALSE] # Extracts a single row of human genetic markers found in each mosquito
+  for (i in 1:length(mosquito_ids)) {
+    for (j in 1:length(human_ids)) {
+      # Initialize the count of matches for the current human-mosquito pair
+      matches <- 0
 
+      # Iterate through each genetic marker for comparison
+      for (k in 1:length(genetic_markers)) {
+        human_marker_value <- buccal_swabs[j, k + 1]  # +1 to skip the first column (IDs), accessing the current marker
+        mosquito_marker_value <- human_profiles[i, k + 1]  # +1 to skip the first column (IDs)
+
+        # Calculate the difference and check if it's within the tolerance
+        difference <- abs(human_marker_value - mosquito_marker_value) / human_marker_value
+        if (difference <= tolerance_decimal) {
+          matches <- matches + 1
+        }
+      }
+
+      # Calculate the percentage of match for each human
       if(result_type == "1") {
 
-        # (Need to ask Fede if this description is accurate) Calculates the genetic distance between the genetic markers of samples found in the current mosquito against the samples of the volunteer
-        match_percentage <- 1 - sum(sapply(1:length(volunteer_samples_column_labels), function(k) identical(human_in_mosquito_selected_row[k], human_genetic_markers[k]))) / length(volunteer_samples_column_labels)
+        match_percentage <- 1 - (matches / length(genetic_markers))
 
-        } else if (result_type == "2") {
+      } else if (result_type == "2") {
 
-        # script below uses a more straight forward percentage match method. Higher the percentage, closer the match
-        match_percentage <- sum(sapply(1:length(volunteer_samples_column_labels), function(k) identical(human_in_mosquito_selected_row[k], human_genetic_markers[k]))) / length(volunteer_samples_column_labels) * 100
+        match_percentage <- matches / length(genetic_markers) * 100
 
-        } else {
+      } else {
 
-          stop("Invalid type. For: genetic_distance, use '1', percentage match,  use '2'")
+        stop("Invalid type. For: genetic_distance, use '1', percentage match,  use '2'")
 
-        }
-      # Assigns calculated match percentage
+      }
       likelihood_matrix[j, i] <- match_percentage
     }
   }
 
-  # assigns column and row names
-  colnames(likelihood_matrix) <- human_in_mosquito_row_labels
-  rownames(likelihood_matrix) <- volunteer_samples_row_labels
+  colnames(likelihood_matrix) <- mosquito_ids
+  rownames(likelihood_matrix) <- human_ids
 
   return(likelihood_matrix)
 }
-
-
-# Modified function that replaces %in% matching with cell by cell matching
-calculate_likelihood_matrix_generic <- function(matrix1, matrix2) {
-
-  # Extracts the first column of the volunteer_samples data
-  matrix1_row_labels <- matrix1[[1]]
-
-  # Extracts the column names of the volunteer_samples data (excluding the first column)
-  matrix1_column_labels <- colnames(matrix1)[-1]
-
-  # Extracts the first column of the human_samples_in_mosquito data
-  matrix2_row_labels <- matrix2[[1]]
-
-  # Extracts the column names of the human_samples_in_mosquito data (excluding the first column)
-  matrix2_column_labels <- matrix2[,-1]
-
-
-  # Initialize an empty matrix for the likelihood
-  likelihood_matrix <- matrix(0, nrow = length(matrix1_row_labels), ncol = length(matrix2_row_labels))
-
-  # Iterate through each mosquito and calculate likelihood for each human
-  for (i in 1:length(matrix2_row_labels)) {
-    for (j in 1:length(matrix1_row_labels)) {
-      matrix1_data <- matrix1[j, -1]  # Exclude the first column (human IDs)
-      matrix2_selected_row <- matrix2_column_labels[i, , drop = FALSE]
-
-      # Calculate the genetic distance something something, need to ask Fede the specific name
-      match_percentage <- 1 - sum(sapply(1:length(matrix2_row_labels), function(k) identical(matrix2_selected_row[k], matrix1_data[k]))) / length(matrix1_column_labels)
-
-      # script below uses a more straight forward percentage match method
-      match_percentage <- sum(sapply(1:length(matrix2_row_labels), function(k) identical(matrix2_selected_row[k], matrix1_data[k]))) / length(matrix1_column_labels) * 100
-
-      likelihood_matrix[j, i] <- match_percentage
-    }
-  }
-
-  colnames(likelihood_matrix) <- human_in_mosquito_row_labels
-  rownames(likelihood_matrix) <- volunteer_samples_row_labels
-
-  return(likelihood_matrix)
-}
-
