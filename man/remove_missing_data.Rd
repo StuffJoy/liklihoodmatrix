@@ -4,14 +4,14 @@
 \alias{remove_missing_data}
 \title{Remove Missing Data}
 \usage{
-remove_missing_data(data, type, threshold_percentage)
+remove_missing_data(data, type, threshold)
 }
 \arguments{
 \item{data}{The input dataset.}
 
 \item{type}{The type of missing data removal. Choose between "column" or "row".}
 
-\item{threshold_percentage}{The threshold percentage of missing data above which columns or rows will be removed.}
+\item{threshold}{The threshold percentage of missing data above which columns or rows will be removed.}
 }
 \value{
 The modified dataset with missing data removed.
