@@ -41,6 +41,10 @@ calculate_likelihood_matrix <- function(buccal_swabs, human_profiles, result_typ
         human_marker_value <- buccal_swabs[j, k + 1]  # +1 to skip the first column (IDs), accessing the current marker
         mosquito_marker_value <- human_profiles[i, k + 1]  # +1 to skip the first column (IDs)
 
+        # Replace NA values with 0
+        human_marker_value[is.na(human_marker_value)] <- 0
+        mosquito_marker_value[is.na(mosquito_marker_value)] <- 0
+
         # Calculate the difference and check if it's within the tolerance
         difference <- abs(human_marker_value - mosquito_marker_value) / human_marker_value
         if (difference <= tolerance_decimal) {
