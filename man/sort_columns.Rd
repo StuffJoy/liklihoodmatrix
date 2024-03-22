@@ -2,23 +2,21 @@
 % Please edit documentation in R/sort_columns.R
 \name{sort_columns}
 \alias{sort_columns}
-\title{Sort Columns in Excel Sheets}
+\title{Sort Columns in data set}
 \usage{
-sort_columns(file_path, output_file)
+sort_columns(unordered_data)
 }
 \arguments{
-\item{file_path}{Path to the input Excel file.}
-
-\item{output_file}{Path to the output Excel file where the sorted data will be saved.}
+\item{unordered_data}{Data that needs to be ordered}
 }
 \value{
-None. The sorted data is written to the output Excel file.
+Data ordered in ASC order
 }
 \description{
 Sorts all columns (except the first) in each sheet of an Excel file in ascending order and writes the sorted data to a new Excel file.
 }
 \examples{
-# Sort columns in input.xlsx and save the sorted data to output.xlsx
-sort_columns("input.xlsx", "output.xlsx")
+# Sort columns in a given data set
+sort_columns(dataset)
 
 }

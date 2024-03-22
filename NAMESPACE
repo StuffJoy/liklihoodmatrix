@@ -3,5 +3,6 @@
 export(calculate_likelihood_matrix)
 export(remove_missing_data)
 export(sort_columns)
+export(sort_excel_columns)
 import(readxl)
 import(writexl)
