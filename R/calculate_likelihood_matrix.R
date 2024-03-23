@@ -8,6 +8,7 @@
 #' @param result_type Denotes whether you want the results to be the genetic distance (1), or percentage match (2)
 #' @param tolerance Denotes an acceptable tolerance range for values
 #' @return A matrix representing the likelihood of genetic marker matching between the samples in each mosquito and human.
+#' @import progress
 #' @export
 #' @examples
 #' # Example usage:
@@ -30,6 +31,13 @@ calculate_likelihood_matrix <- function(buccal_swabs, human_profiles, result_typ
   # Initialize an empty matrix for the likelihood
   likelihood_matrix <- matrix(0, nrow = length(human_ids), ncol = length(mosquito_ids))
 
+  # Total iterations for progress bar
+  total_iterations <- length(mosquito_ids) * length(human_ids)
+
+  # Initialize progress bar
+  pb <- progress_bar$new(format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
+                         total = total_iterations, clear = FALSE, width = 100)
+
   # Iterate through each mosquito and calculate likelihood for each human
   for (i in 1:length(mosquito_ids)) {
     for (j in 1:length(human_ids)) {
@@ -42,7 +50,6 @@ calculate_likelihood_matrix <- function(buccal_swabs, human_profiles, result_typ
         mosquito_marker_value <- human_profiles[i, k + 1]  # +1 to skip the first column (IDs)
 
         # Replace NA values with 0
-        #human_marker_value[is.na(human_marker_value)] <- 0
         mosquito_marker_value[is.na(mosquito_marker_value)] <- 0
 
         # Calculate the difference and check if it's within the tolerance
@@ -56,19 +63,18 @@ calculate_likelihood_matrix <- function(buccal_swabs, human_profiles, result_typ
 
       # Calculate the percentage of match for each human
       if(result_type == "1") {
-
         match_percentage <- 1 - (matches / length(genetic_markers))
-
       } else if (result_type == "2") {
-
         match_percentage <- matches / length(genetic_markers) * 100
-
       } else {
-
-        stop("Invalid type. For: genetic_distance, use '1', percentage match,  use '2'")
-
+        stop("Invalid type. For: genetic_distance, use '1', percentage match, use '2'")
       }
+
+      # Update likelihood matrix
       likelihood_matrix[j, i] <- match_percentage
+
+      # Update progress bar
+      pb$tick()
     }
   }
 
