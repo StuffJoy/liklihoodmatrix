@@ -28,6 +28,13 @@ calculate_uncertainty_matrix <- function(buccal_swabs, human_profiles) {
   # Initialize an empty matrix for the missing data percentage
   uncertainty_matrix <- matrix(0, nrow = length(human_ids), ncol = length(mosquito_ids))
 
+  # Total iterations for progress bar
+  total_iterations <- length(mosquito_ids) * length(human_ids)
+
+  # Initialize progress bar
+  pb <- progress_bar$new(format = "(:spin) [:bar] :percent [Elapsed time: :elapsedfull || Estimated time remaining: :eta]",
+                         total = total_iterations, clear = FALSE, width = 100)
+
   # Iterate through each mosquito and calculate missing data percentage for each human
   for (i in 1:length(mosquito_ids)) {
     for (j in 1:length(human_ids)) {
@@ -50,6 +57,9 @@ calculate_uncertainty_matrix <- function(buccal_swabs, human_profiles) {
 
       # Update missing data matrix
       uncertainty_matrix[j, i] <- uncertainty_percentage
+
+      # Update progress bar
+      pb$tick()
     }
   }
 
